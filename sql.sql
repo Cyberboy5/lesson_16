@@ -24,3 +24,13 @@ CREATE TABLE book(
     image TEXT
 );
 
+DROP TABLE users;
+
+CREATE TABLE users(
+    id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    email TEXT,
+    password VARCHAR(64),
+    role VARCHAR(64) DEFAULT 'user'
+);
+

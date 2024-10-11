@@ -3,9 +3,43 @@ namespace App\Model;
 
 USE App\Model\Model;
 USE PDO;
+USE PDOException;
 
 class Book extends Model{
     public static $table_name = 'book';
+
+    public static function get_books(){
+        
+        try {
+            $con = self::connect(); 
+
+            $query = "SELECT 
+                        book.id,
+                        title,
+                        description,
+                        text,
+                        author.name AS author_name,
+                        genre.name AS genre_name,
+                        image 
+                    FROM 
+                        book
+                    LEFT JOIN 
+                        author ON book.author_id = author.id 
+                    LEFT JOIN 
+                        genre ON book.genre_id = genre.id 
+                    GROUP BY 
+                        book.id";
+                        
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+                
+                
+                }
 
     
     public static function uploadImage($file, $uploadDir) {
@@ -32,20 +66,14 @@ class Book extends Model{
     }
 
     public static function createBook($title, $description, $genre_id, $text, $image_path, $author_id) {
-        // Establish the database connection
         $db = self::connect(); 
         
-        // Prepare the SQL query with named placeholders
         $query = "INSERT INTO book (title, description, genre_id, text, image, author_id) 
                   VALUES (:title, :description, :genre_id, :text, :image, :author_id)";
         
-        // Prepare the statement
         $stmt = $db->prepare($query);
     
-        // Check if preparation failed
-
         
-        // Bind the parameters using an associative array
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
         $stmt->bindParam(':genre_id', $genre_id, PDO::PARAM_INT);
@@ -53,11 +81,10 @@ class Book extends Model{
         $stmt->bindParam(':image', $image_path, PDO::PARAM_STR);
         $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
         
-        // Execute the query
         if ($stmt->execute()) {
-            return true; // Query succeeded
+            return true; 
         } else {
-            return false; // Query failed
+            return false; 
         }
     }
     
@@ -65,35 +92,30 @@ class Book extends Model{
     public static function update($id, $title, $description, $genre_id, $text, $author_id,$image_path = null) {
         $db = self::connect();
     
-        // Prepare the SQL query with named placeholders
         if ($image_path) {
             $query = "UPDATE book SET title = :title, description = :description, genre_id = :genre_id, text = :text, image = :image, author_id = :author_id WHERE id = :id";
         } else {
             $query = "UPDATE book SET title = :title, description = :description, genre_id = :genre_id, text = :text, author_id = :author_id WHERE id = :id";
         }
     
-        // Prepare the statement
         $stmt = $db->prepare($query);
     
     
-        // Bind the parameters using an associative array
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
         $stmt->bindParam(':genre_id', $genre_id, PDO::PARAM_INT);
         $stmt->bindParam(':text', $text, PDO::PARAM_STR);
         $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Always bind the ID
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); 
     
-        // If there's an image, bind that as well
         if ($image_path) {
             $stmt->bindParam(':image', $image_path, PDO::PARAM_STR);
         }
     
-        // Execute the query
         if ($stmt->execute()) {
-            return true; // Query succeeded
+            return true; 
         } else {
-            return false; // Query failed
+            return false; 
         }
     }
     

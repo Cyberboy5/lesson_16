@@ -1,5 +1,4 @@
 <?php
-
     spl_autoload_register(function ($class){
         $class = str_replace('App\\' , '',$class);
         $path = __DIR__ . '/App/' . str_replace('\\','/',$class) . '.php';
@@ -10,5 +9,4 @@
             echo 'File topilmadi:' . $path;
         }
     });
-
 ?>

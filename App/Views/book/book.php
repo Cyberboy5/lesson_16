@@ -10,8 +10,8 @@
     <th>Title</th>
     <th>Description</th>
     <th>Text</th>
-    <th>Author ID</th>
-    <th>Genre ID</th>
+    <th>Author Name</th>
+    <th>Genre Name</th>
     <th>Options</th>
 </tr>
 
@@ -23,8 +23,8 @@
             <td><?= $book['title']?></td>
             <td><?= $book['description']?></td>
             <td><?= $book['text']?></td>
-            <td><?= $book['author_id']?></td>
-            <td><?= $book['genre_id']?></td>
+            <td><?= $book['author_name']?></td>
+            <td><?= $book['genre_name']?></td>
             <td>
                 <form action="/delete_book" method = 'POST' class="d-inline" >
                     <input type="hidden" name="id" value="<?=$book['id']?>">

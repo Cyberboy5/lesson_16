@@ -31,9 +31,11 @@ class Route{
         // var_dump(!$action);
         // dd(self::$routes);
         // dd($path,$method,$action);
+
         if(!$action){
             echo "404 Not Found:" . $path; 
         }
+        
         if(is_array($action)){
             $controller = new $action[0]();
             $controller->{$action[1]}();

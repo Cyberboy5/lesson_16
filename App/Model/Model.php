@@ -75,7 +75,43 @@ class Model extends Database {
         }
     }
 
+    public static function register_user($data){
+
+        $values = '';
+        foreach($data as $key=>$value){
+            if($key =='password'){
+                $value = md5(($value));
+            }
+            $values .= "'{$value}' , ";
+        }
+
+        $cleanString = rtrim($values,", ");
+        // dd($cleanString);
+        $conn = self::connect();
+        $stmt = $conn->prepare("INSERT INTO users (name,email,password) VALUES (" . $cleanString . ")");
+        return $stmt->execute();
+
+    }
+    public static function get_user($data){
+
+        $values = '';
+        foreach($data as $key=>$value){
+            if($key =='password'){
+                $value = md5(($value));
+            }
+            $values .= "{$key} = '{$value}' AND ";
+        }
+
+        $cleanString = rtrim($values,"AND ");
+        // dd($cleanString);
+        $conn = self::connect();
+        $stmt = $conn->prepare("SELECT * FROM users WHERE (" . $cleanString . ")");
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    }
 
     
+
     
 }
